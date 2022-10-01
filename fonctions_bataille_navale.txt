@@ -1,0 +1,24 @@
+$ variables de la fonction partie_solo : 
+char : tabJ1[8][8], vueJ1[8][8], tabIA[8][8], vueIA[8][8];
+int  : tabPbtJ1[2], tabMbtJ1[3], tabGbtJ1[4], tabPbtJ1[2], tabMbtJ1[3],			tabGbtJ1[4];
+int : scoreJ1, scoreIA, tour;
+
+# fonction genTab(char tab) :
+	> elle prend en entree un tableau 2D 8*8 et rempli toutes les cases de "~".
+
+# fonction iniTab(char tab, int tabPbt, int tabMbt, int tabGbt) :
+	$ variables :
+		int : deb, fin, palceV = 0;
+	> elle prend un entree le tableau d'un joueur et lui demande le debut et la fin de ses bateaux a placer (petit bateau de longeur 2, bateau moyen de longeur 3 et grand bateau de longeur 4) en remplacant les "~" de sont tableau par des "0" si le bateau est place et rempli le tableau de chaques bateaux par des "1" (pour verifier si le bateau n'as pas coule au cour de la partie).
+	//elle utilise la fonction verPo pour verifier si on peut placer le bateau
+
+# fonction verPo(int deb, int fin, int lg, int placeV) :
+	/*elle sera appelee dans iniTab avec des entrees en fonction du type de bateau lg = 2(Pbt)/3(Mbt)/4(Gbt)*/
+	> elle verifie si c'est possile de placer le bateau du joueur (si il n'y a pas d'autres bateaux ou si le bateau ne sort pas du tableau).
+	si c possible il retourn placeV = 1 et on place le bt dans iniTab.
+
+# fonction save(???) :
+	> sauvegarde la partie dans un fichier.
+	/*elle est appellee dans les fonctions partie_solo ou partie_multi a chaques fois que le tour change.*/
+
+# fonction
