@@ -1,0 +1,153 @@
+Algo : Bataille_navale
+Declaration
+	char : tabJ1[8][8], vueJ1[8][8], tabJ2[8][8], vueJ2[8][8];
+	int  : tabPbtJ1[2], tabMbtJ1[3], tabGbtJ1[4], tabPbtJ2[2], tabMbtJ2[3],			tabGbtJ2[4];
+	int : choix, NP, joue = 1, scoreJ1, scoreIA, tour = 1, GG;
+	string : nomSave, nomCharger;
+Debut
+	Faire
+		<Afficher le menu>
+		Saisir choix;
+	Tant que (choix != 4)
+	Selon (choix)
+		Cas 1 (Nouvelle partie) :
+			Afficher ("Donnez la date (jj/mm/aa) : ")
+			Saisir nomSave;
+			Afficher ("1- Jouer contre l'intelligence artificielle")
+			Afficher ("2- Jouer a deux")
+			Afficher ("votre choix")
+			Saisir NP;
+			Si (NP = 1) Alors //commencer une partie solo
+				tabJ1 = #genTab(tabJ1)
+				vueJ1 = #genTab(vueJ1)
+				tabJ2 = #genTab(tabJ2)
+				vueJ2 = #genTab(vueJ2)
+				tabJ1 = #iniTab(char tabJ1, int tabPbtJ1, int tabMbtJ1, int tabGbtJ1)
+				tabJ1 = #iniTab(char tabJ2, int tabPbtJ2, int tabMbtJ2, int tabGbtJ2)
+				joue = #partie(int scoreJ1, int scoreJ2)
+				Faire
+					Si (tour = 1)
+						Afficher ("Joueur1")
+						#Tir(char vueJ1, char tabJ2, int tabPbtJ2, int tabMbtJ2, int tabGbtJ2, int scoreJ1)
+						joue = #partie(int scoreJ1, int scoreJ2, int GG)
+						tour = 2
+						#Save(string nomSave, int tour)
+					Sinon
+						Afficher ("Inteligence Artificielle")
+						#TirIA(char vueJ2, char tabJ1, int tabPbtJ1, int tabMbtJ1, int tabGbtJ1, int scoreJ2)
+						joue = #partie(int scoreJ1, int scoreJ2, int GG)
+						tour = 1
+						#save(string nomSave, int tour)
+						/*utiliser <kbhit()> pour demander au joueur de confirmer/continuer*/ 
+					Fin Si
+				Tant que (joue = 1)
+				#delsave(string nomSave)
+				Si (GG = 1)
+					Afficher ("Joueur1 a gagne")
+					/*utiliser <kbhit()> pour demander au joueur de confirmer/continuer*/
+				Sinon
+					Afficher ("L'intelligence artificielle a gagnée")
+					/*utiliser <kbhit()> pour demander au joueur de confirmer/continuer*/
+				Fin Si
+			Sinon // commencer une partie a deux
+				tabJ1 = #genTab(tabJ1)
+				vueJ1 = #genTab(vueJ1)
+				tabJ2 = #genTab(tabJ2)
+				vueJ2 = #genTab(vueJ2)
+				tabJ1 = #iniTab(char tabJ1, int tabPbtJ1, int tabMbtJ1, int tabGbtJ1)
+				tabJ1 = #iniTab(char tabJ2, int tabPbtJ2, int tabMbtJ2, int tabGbtJ2)
+				joue = #partie(int scoreJ1, int scoreJ2)
+				Faire
+					Si (tour = 1)
+						Afficher ("Joueur1")
+						#Tir(char vueJ1, char tabJ2, int tabPbtJ2, int tabMbtJ2, int tabGbtJ2, int scoreJ1)
+						joue = #partie(int scoreJ1, int scoreJ2, int GG)
+						tour = 2
+						#Save(string nomSave, int tour)
+					Sinon
+						Afficher ("Joueur2")
+						#Tir(char vueJ2, char tabJ1, int tabPbtJ1, int tabMbtJ1, int tabGbtJ1, int scoreJ2)
+						joue = #partie(int scoreJ1, int scoreJ2, int GG)
+						tour = 1
+						#save(string nomSave, int tour)
+					Fin Si
+				Tant que (joue = 1)
+				#delsave(string nomSave)
+				Si (GG = 1)
+					Afficher ("Joueur1 a gagne")
+					/*utiliser <kbhit()> pour demander au joueur de confirmer/continuer*/
+				Sinon
+					Afficher ("Joueur2")
+					/*utiliser <kbhit()> pour demander au joueur de confirmer/continuer*/
+				Fin Si
+			Fin Si
+		Cas 2 :
+			/*demander nomCharger et charcher la partie, elle continue au tour ou elle s'est arrete*/
+		Cas 3 :
+			<Afficher Les regles du jeu>
+	Fin Selon
+Fin
+
+
+############################# Les Fonctions ##############################
+
+# fonction genTab(char tab) :
+	> elle prend en entree un tableau 2D 8*8 et rempli toutes les cases de "~".
+
+# fonction iniTab(char tabJ*, int tabPbtJ*, int tabMbtJ*, int tabGbtJ*) :
+	$ variables :
+		int : deb, fin, palceV = 0;
+	> elle prend un entree le tableau d'un joueur et lui demande le debut et la fin de ses bateaux a placer (petit bateau de longeur 2, bateau moyen de longeur 3 et grand bateau de longeur 4) puis les placent en remplacant les "#" de sont tableau par des "?" (? = 2 pour Pbt/ 3 pour Mbt/ 4 pour Gbt) si le bateau est place et rempli le tableau de chaques bateaux par des "1" (pour verifier si le bateau n'as pas coule au cour de la partie).
+	//elle utilise la fonction verPo pour verifier si on peut placer le bateau ou non.
+
+# fonction iniTabIA(-||-) :
+	/*idem que iniTab sauf qu'on utilise la fonction rand pour definit donner les positions.*/
+
+# fonction verPo(int deb, int fin, int lg, int placeV) :
+	/*elle sera appelee dans iniTab avec des entrees en fonction du type de bateau lg = 2(Pbt)/3(Mbt)/4(Gbt)*/
+	> elle verifie si c'est possile de placer le bateau du joueur (si il n'y a pas d'autres bateaux ou si le bateau ne sort pas du tableau).
+	si c possible il retourn placeV = 1 et on place le bt dans iniTab.
+
+# fonction save(string nomSave, int tour) :
+	> sauvegarde la partie dans un fichier du meme nom que la variable.
+	/*elle est appellee dans les fonctions partie_solo ou partie_multi a chaques fois que le tour change.*/
+
+# fonction delsave(string nomSave) :
+	>Supprime la sauvegarde du jeu.
+	/*utilisee si la parti est finis pour ne pas garder une partie achevee*/
+
+# fonction Tir(char vueJ*, char tabJ*, int tabPbtJ*, int tabMbtJ*, int tabGbtJ*, int scoreJ*) :
+	/*elle sera utilise au cours de la partie pour verifier si le tir du joueur a touche un bateau adverse.*/
+	$ variable : int CT, int LT;
+	> elle prend en entree la vue du joueur, qu'elle vas modifier en fonction du resultat du tir (remplace les "#" par "X" si le tir est bon et "0" si il est rate), le tableau de l'adversaire pour verifier si le tir est bon (on remplace le "?" par "#") ou rate, et les bateau du jour adverse (elle modifie les valeur de leur tableau en remplacent un "1" par un "0" si on touche un bateau une fois), ele score du joueur (qui ogmente si le tir est bon).
+	pour verifier le tir on verifie si tabJ*[$LT][$CT] est different de "#", si oui on verifie ensuite si c'est un Pbt (tabJ*[$LT][$CT] = 2),un Mbt (tabJ*[$LT][$CT] = 3) ou un Gbt (tabJ*[$LT][$CT] = 4).
+
+# fonction TirIA (-||-) :
+	/*La meme que celle des joueurs sauf qu'on utilise la fonction rand pour definit CT et LT.*/
+
+# fonction Partie(int scoreJ1, int scoreJ2) :
+	/*elle verifie si un des score a atteint le max si oui retourner 0 sinon retourner 1 et verifie le score le plus eleve si c'est J1, GG = 1 sinon GG = 2*/
+
+Exemple d'appercu du jeu :
+
+	  Vue du joueur
+	0 1 2 3 4 5 6 7 8			donnez la colone du tir : 2
+	1 # # # # # # # #			donnez la ligne tir : 4
+	2 # # X # # # # #			Raté
+	3 # # X # # # # #			
+	4 # 0 # # # 0 # #
+	5 # # # # # # # #			donnez la colone du tir : 3
+	6 # # # # # # # #			donnez la ligne tir : 3
+	7 # # # # # # # #			Touché-coulé
+	8 # # # # # # # #
+
+   tab de l'advairsaire
+	0 1 2 3 4 5 6 7 8
+	1 # # # # # # # #
+	2 # # 2 # # # # #
+	3 # # 2 # # # # #
+	4 # # # # # # 4 #
+	5 # # # # # # 4 #
+	6 # 3 3 3 # # 4 #
+	7 # # # # # # 4 #
+	8 # # # # # # # #
